@@ -9,12 +9,17 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   Platform,
+  Modal,
+  Pressable,
+  Alert,
 } from "react-native";
 import { styled } from "nativewind";
 
 const TwText = styled(Text);
 const TwView = styled(View);
 const TwInput = styled(TextInput);
+const TwModal = styled(Modal);
+const TwPressable = styled(Pressable);
 
 export default function App() {
   const K = 1.043176;
@@ -22,6 +27,7 @@ export default function App() {
   const [density, setDensity] = useState("");
   const [ounce, setOunce] = useState("0");
   const [flOunce, setFlOunce] = useState("0");
+  const [modalVisible, setModalVisible] = useState(false);
 
   const getWaterDensity = (temperatureFahrenheit: number) => {
     const densityOuncesPerCubicInch =
@@ -90,13 +96,53 @@ export default function App() {
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <TwView className="flex-1 justify-center items-center bg-slate-700 relative">
+          <TwModal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+              Alert.alert("Modal has been closed.");
+              setModalVisible(!modalVisible);
+            }}
+          >
+            <TwView className="flex-1 justify-center items-center">
+              <TwView className="w-[310px] h-[100px] bg-white  rounded-lg border flex justify-center items-center p-5 gap-2 relative">
+                <TwView className="grow pb-5">
+                  <TwView className="flex flex-row justify-center items-center">
+                    <TwView className="">
+                      <TwText className="italic">fluid ounces =</TwText>
+                    </TwView>
+                    <TwView>
+                      <TwText className="italic border-b text-center">
+                        ounces
+                      </TwText>
+                      <TwText className="italic text-center text-xs">
+                        1.043176 × ingredient density
+                      </TwText>
+                    </TwView>
+                  </TwView>
+                </TwView>
+                <TwPressable
+                  className="bg-red-700 p-2 rounded absolute -bottom-1/3 w-[100px]"
+                  onPress={() => setModalVisible(!modalVisible)}
+                >
+                  <TwText className="text-slate-200 font-bold text-center">
+                    Close
+                  </TwText>
+                </TwPressable>
+              </TwView>
+            </TwView>
+          </TwModal>
+
           <TwText className="font-bold text-[35px] text-center text-orange-400 mb-5">
-            Mikey Converter
+            Fluid Converter
           </TwText>
 
-          <TwView className="w-[350px] text-left p-4 bg-slate-800 mb-3 rounded border border-yellow-800">
-            <TwView className="w-[350px] text-left flex flex-row justify-start items-center mb-2 gap-2 relative">
-              <TwText className="text-bold text-white text-xl">T :</TwText>
+          <TwView className="w-[340px] text-left p-4 bg-slate-800 mb-3 rounded border border-yellow-800 relative">
+            <TwView className="w-[340px] text-left flex flex-row justify-start items-center mb-2 gap-2 relative">
+              <TwText className="text-bold text-white text-xl">
+                Temperature:
+              </TwText>
               <TwInput
                 className="text-right border border-yellow-500/50 w-[100px] px-2 text-xl font-bold text-slate-100 bg-slate-600 rounded pb-1"
                 value={temperature}
@@ -109,17 +155,23 @@ export default function App() {
             </TwView>
             <TwView className="flex flex-row">
               <TwText className="text-bold text-white text-xl grow">
-                K : {K}
-              </TwText>
-              <TwText className="text-bold text-white text-xl grow">
-                D: {density}
+                Density: {density}
               </TwText>
             </TwView>
+
+            <TwPressable
+              className="absolute -top-2 -right-2 px-2 py-0 bg-slate-600 rounded-full border border-slate-400"
+              onPress={() => setModalVisible(true)}
+            >
+              <TwText className="text-slate-200 font-bold text-center">
+                !
+              </TwText>
+            </TwPressable>
           </TwView>
 
-          <TwView className="w-[350px] relative">
+          <TwView className="w-[340px] relative">
             <TwInput
-              className="w-full text-left border border-slate-400 pb-2 pt-4 pl-3 pr-5 m-2 rounded-md text-slate-300 block text-2xl mb-4"
+              className="w-full text-left border border-slate-400 pb-2 pt-4 pl-3 pr-5 my-2 rounded-md text-slate-300 block text-2xl mb-4"
               inputMode="decimal"
               value={ounce}
               onChangeText={handleOunce}
@@ -128,9 +180,9 @@ export default function App() {
               oz
             </TwText>
           </TwView>
-          <TwView className="w-[350px] relative">
+          <TwView className="w-[340px] relative">
             <TwInput
-              className="w-full text-left border border-slate-400 pb-2 pt-4 pl-3 pr-5 m-2 rounded-md text-slate-300 block text-2xl"
+              className="w-full text-left border border-slate-400 pb-2 pt-4 pl-3 pr-5 my-2 rounded-md text-slate-300 block text-2xl"
               inputMode="decimal"
               value={flOunce}
               onChangeText={handleFlOunce}
